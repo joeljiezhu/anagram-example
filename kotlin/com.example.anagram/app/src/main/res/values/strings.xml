@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Anagram</string>
+    <string name="word_between_3_to_15_letters">Word between 3 to 15 letters</string>
+    <string name="button">Find</string>
+</resources>

@@ -1,0 +1,1 @@
+// anagram core interface
