@@ -1,0 +1,2 @@
+com/example/anagram/BuildConfig.java
+ com.example.anagram.BuildConfig
