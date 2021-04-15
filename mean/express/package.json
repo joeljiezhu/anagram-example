@@ -1,0 +1,16 @@
+{
+  "name": "mean-express",
+  "version": "0.0.1",
+  "description": "MEAN app Express / Node.js part",
+  "main": "index.js",
+  "scripts": {
+    "test": "ava"
+  },
+  "keywords": [
+    "mean",
+    "express",
+    "node"
+  ],
+  "author": "Joel Chu",
+  "license": "ISC"
+}
