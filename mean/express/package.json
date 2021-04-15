@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "ava"
+    "start": "node ./index.js"
   },
   "keywords": [
     "mean",
@@ -12,5 +13,10 @@
     "node"
   ],
   "author": "Joel Chu",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "ava": "^3.15.0",
+    "express": "^4.17.1",
+    "mongodb": "^3.6.6"
+  }
 }

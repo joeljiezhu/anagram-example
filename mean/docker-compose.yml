@@ -1,14 +1,22 @@
 version: "3.8"
 services:
-mongodb:
-image: mongo
-container_name: mongodb 
-environment:
-- PUID=1000
-- PGID=1000
-volumes:
-- ./database:/data/db 
-ports:
-- 27017:27017
-restart: unless-stopped
+  angular:
+    build: angular
+    ports:
+      - "4200:4200"
 
+  express:
+    build: express
+    ports:
+      - "3000:3000"
+    links:
+      - database
+
+  database:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./database:/data/db
+
+# @TODO nginx setup to proxy all this apps 
