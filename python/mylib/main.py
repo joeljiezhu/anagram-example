@@ -1,11 +1,19 @@
 import sys
-import math
-import random
 import json
+import time
+import random
+import math
+
+from functools import reduce
 from pathlib import Path
+
+from mylib.algo import getTotalCombinationNum
+from mylib.word import scrambleWords
+
 # prepare the configuration data
 p = Path(__file__)
-WORDS_DIR = p.parent.parent.joinpath('share')
+# @TODO this is getting really silly need to pass this via a param
+WORDS_DIR = p.parent.parent.parent.joinpath('share')
 configFile = WORDS_DIR.joinpath('config.json')
 
 jsonObj = open(str(configFile))
@@ -15,6 +23,9 @@ jsonData = json.load(jsonObj)
 # in fact the number is not accurate, system report 1000 but the
 # recursion stop at 997
 recursionLimit = sys.getrecursionlimit() * 0.9
+
+# decorator import (note we need to explictly name the import)
+# from mydeco import timer_decorator
 
 # Functions
 
@@ -28,58 +39,6 @@ def getWords(dir, name):
 
     return fileContent.strip().split(' ')
 
-def getTotalCombinationNumRecursion(n, total = 0):
-    """
-    The old calculation was wrong, we need the total possible combination number
-    which is Xn ... X2 * X1 = total
-    This example to actually show you the math inside
-    """
-    if (n == 1):
-        return total
-    if (total == 0):
-        total = n
-    n -= 1
-    total *= n
-    return getTotalCombinationNumRecursion(n, total)
-
-def getTotalCombinationNumFrp():
-    """
-    Same result as above but using a FRP style
-    Although we get the same result but this one it's harder to know the math 
-    """
-
-    return num
-
-def getTotalCombinationNum(n):
-    """
-    wrapper method
-    """
-    return getTotalCombinationNumFrp(n)
-
-def fisherYates(arr):
-    """
-    Randomly rearrange an array using Fisher Yates algorithm
-    """
-    ctn = len(arr)
-    for i in range(0, ctn):
-        j = math.floor(random.random() * (i + 1))
-        temp = arr[i]
-        arr[i] = arr[j]
-        arr[j] = temp
-
-    return arr
-
-def scrambleWords(str):
-    """
-    scramble the characters
-    although in python string is also array but it does not
-    allow assignment, therefore we still need to turn it into a list
-    using comprehension
-    """
-    arr = [ch for ch in str]
-    newArr = fisherYates(arr)
-
-    return ''.join(newArr)
 
 def getPossibleWord(str, triedWords, combTotal, recursionLimit, totalTry = 0):
     """
@@ -114,7 +73,10 @@ def getPossibleWordInner(str, triedWords, maxAllowTry, i = 0):
 
     return (possibleWord, i)
 
-
+# need to decorator the function when we declare the function
+# something fucks up, it crash the function when using decorator
+# Error: TypeError: 'NoneType' object is not callable
+# @timer_decorator
 def getAnagram(str, words):
     """
     find the anagram from the input str
@@ -145,6 +107,59 @@ def getAnagram(str, words):
         # we don't count that as one try
         if (word):
             possibleWords.append(word)
-            ++tried
+            tried += 1
 
     return (False, tried, guessTotal) # couldn't find anything that should be impossible
+
+def getCharSeq(word):
+    """
+    input the possible world and sort the character by A-Z
+    """
+    seq = [ch for ch in word]
+    seq.sort()
+
+    return ''.join(seq)
+
+def getMinuteSecond(seconds):
+    minute = math.floor(seconds/60)
+    secondsLeft = seconds - minute*60
+    # getting too long and ugly so break it down
+    msg = f"{minute} minute{'s' if minute > 1 else ''}"
+    if (secondsLeft > 0):
+        msg += f" {secondsLeft} second{'s' if secondsLeft > 1 else ''}"
+    return msg
+
+def countDownMsg(seconds, msg=""):
+    for c in range(seconds, 0, -1):
+        print(f"{msg}run again in {getMinuteSecond(c)}", end="\r")
+        time.sleep(1)
+
+def getDuration(s):
+    """
+    return how many days / hours / minutes / seconds
+    """
+    days = 0
+    hrs = 0
+    mins = math.floor(s/60)
+    secs = s - mins * 60
+    if (mins > 60): # over an hour
+        hrs = math.floor(mins/60)
+        mins = mins - hrs * 60
+        if (hrs > 24): # over a day
+            days = math.floor(hrs/24)
+            hrs = hrs - days * 24
+    return (days, hrs, mins, secs)
+
+def getFormatDuration(s):
+    days, hrs, mins, secs = getDuration(s)
+    msg = []
+    if (days > 0):
+        msg.append(f"{days} day{'s' if days > 1 else ''}")
+    if (hrs > 0):
+        msg.append(f"{hrs} hour{'s' if hrs > 1 else ''}")
+    if (mins > 0):
+        msg.append(f"{mins} minute{'s' if mins > 1 else ''}")
+
+    msg.append(f"{secs} second{'s' if secs > 1 else ''}")
+
+    return ' '.join(msg)

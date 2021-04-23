@@ -7,11 +7,20 @@ java*/Test.class
 .idea
 anagram-example.iml
 
-python/__pycache__/*
+**/__pycache__/*
 python/test.py
+python/*.pyc
+python/.pytest.cache
 
 kotlin/test.kt
+kotlin/anagram.jar
+kotlin/exp/*
 
 php/test.php
 
+<<<<<<< HEAD
 mean/argon-design/*
+=======
+share/anagrams.db
+share/dictionary.html
+>>>>>>> 774ca3c13fcbf29664a5cd18279196e4457df92f
