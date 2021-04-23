@@ -1,7 +1,8 @@
-// Super simple REST API 
+// Super simple REST API
 const { join } = require('path')
 const express = require('express')
 // const http = require('http')
+const { processor } = require('./src/processor')
 const app = express()
 const PORT = process.env.PORT || 3000
 
@@ -27,8 +28,13 @@ app
           res.json(configJson)
         break;
       default:
-        if (!isNaN(parseInt(id))) {
-
+        id = parseInt(id)
+        if (!isNaN(id) && id <= POSSIBLE_MAX_CHAR && id >= MIN_CHAR) {
+          const file = join(SHARE, [id, FILE_EXT].join('.'))
+          processor(file)
+            .then(words => {
+              res.json(words)
+            })
         } else {
           // throw error!
           res.status(404).send("OOPs NOT FOUND")
