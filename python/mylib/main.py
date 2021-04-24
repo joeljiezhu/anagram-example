@@ -124,7 +124,9 @@ def getMinuteSecond(seconds):
     minute = math.floor(seconds/60)
     secondsLeft = seconds - minute*60
     # getting too long and ugly so break it down
-    msg = f"{minute} minute{'s' if minute > 1 else ''}"
+    msg = ""
+    if (minute > 0):
+        msg += f"{minute} minute{'s' if minute > 1 else ''}"
     if (secondsLeft > 0):
         msg += f" {secondsLeft} second{'s' if secondsLeft > 1 else ''}"
     return msg
@@ -138,28 +140,34 @@ def getDuration(s):
     """
     return how many days / hours / minutes / seconds
     """
+    MIN = 60
+    DAY = 24
     days = 0
     hrs = 0
-    mins = math.floor(s/60)
-    secs = s - mins * 60
-    if (mins > 60): # over an hour
-        hrs = math.floor(mins/60)
-        mins = mins - hrs * 60
-        if (hrs > 24): # over a day
-            days = math.floor(hrs/24)
-            hrs = hrs - days * 24
+    mins = math.floor(s / MIN)
+    secs = s - mins * MIN
+    if (mins > MIN): # over an hour
+        hrs = math.floor(mins/MIN)
+        mins = mins - hrs * MIN
+        if (hrs > DAY): # over a day
+            days = math.floor(hrs / DAY)
+            hrs = hrs - days * DAY
+
     return (days, hrs, mins, secs)
+
+def _s(n):
+    return f"{'s' if n > 1 else ''}"
 
 def getFormatDuration(s):
     days, hrs, mins, secs = getDuration(s)
     msg = []
     if (days > 0):
-        msg.append(f"{days} day{'s' if days > 1 else ''}")
+        msg.append(f"{days} day{_s(days)}")
     if (hrs > 0):
-        msg.append(f"{hrs} hour{'s' if hrs > 1 else ''}")
+        msg.append(f"{hrs} hour{_s(hrs)}")
     if (mins > 0):
-        msg.append(f"{mins} minute{'s' if mins > 1 else ''}")
-
-    msg.append(f"{secs} second{'s' if secs > 1 else ''}")
+        msg.append(f"{mins} minute{_s(mins)}")
+    # @BUg when it's single digit, two s appear
+    msg.append(f"{secs} second{_s(secs)}")
 
     return ' '.join(msg)

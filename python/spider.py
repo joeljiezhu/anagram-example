@@ -49,20 +49,25 @@ def writeToDb(html_doc, word):
 
 def goFetch(word):
     """
-    combine everything in one call 
+    combine everything in one call
     """
-    print(f"Getting dict for {word}", end="\r")
-    soup = getHtmlDoc(word)
-    if (soup != False):
-        # write this to a file
-        data = soup.select("#base-pw > main > section > section > div:nth-child(2)")
-        # we need to write this to the database instead
-        if (len(data) > 0):
-            writeToDb(data[0], word)
+    try:
+        print(f"Getting dict for {word}", end="\r")
+        soup = getHtmlDoc(word)
+        if (soup != False):
+            # write this to a file
+            data = soup.select("#base-pw > main > section > section > div:nth-child(2)")
+            # we need to write this to the database instead
+            if (len(data) > 0):
+                writeToDb(data[0], word)
+            else:
+                print("The selector not able to get anything", end="\r")
         else:
-            print("The selector not able to get anything", end="\r")
-    else:
-        print("Something went wrong! Not getting anything", end="\r")
+            print(repr(soup))
+            print("Something went wrong! Not getting anything", end="\r")
+    except Exception as e:
+        # just want to keep it running s
+            print(str(e))
 
 
 # run in from the command line
