@@ -22,11 +22,17 @@ def getUrl(word):
 
 
 def getHtmlDoc(word):
-    res = requests.get(getUrl(word), headers = header)
-    if (res.status_code == 200):
-        # return res.content # don't use res.text
-        return BeautifulSoup(res.text, "html.parser")
-    return False
+    """
+    The connection issue could cause the requests throw error and halt the entire operation
+    we need to stop it and let it keep running
+    """
+    try:
+        res = requests.get(getUrl(word), headers = header)
+        if (res.status_code == 200):
+            # return res.content # don't use res.text
+            return BeautifulSoup(res.text, "html.parser")
+    except:
+        return False
 
 def writeToFile(html_doc, word):
     f = open(f"dictionary-{word}.html", "w+")
@@ -42,6 +48,9 @@ def writeToDb(html_doc, word):
     return database.execute(sql, (str(html_doc), word))
 
 def goFetch(word):
+    """
+    combine everything in one call 
+    """
     print(f"Getting dict for {word}", end="\r")
     soup = getHtmlDoc(word)
     if (soup != False):
