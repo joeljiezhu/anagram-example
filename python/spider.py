@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # spider.py
 # take the word from the db then query dictionary.com to get the
 # meaning of the word then store it in the db
@@ -73,29 +75,39 @@ def goFetch(word):
 # run in from the command line
 if __name__ == '__main__':
     if len(argv) > 1:
-        totalMinutes = 0
-        database.connect()
+        # print(argv[1])
 
-        countResult = database.execute("SELECT count(*) as total FROM anagrams WHERE dict IS NULL")
-        row = countResult.fetchone()
-        total = row[0]
+        if (argv[1] == "run"):
 
-        result = database.execute("SELECT * FROM anagrams WHERE dict IS NULL")
-        totalSeconds = 0
+            totalMinutes = 0
+            database.connect()
 
-        for row in result:
-            word, charseq, dict = row
-            goFetch(word)
-            total -= 1
-            minute = random.randrange(3, 10) * 60 # 3 to 10 minutes sleep
-            totalSeconds += minute
-            msg = f"Done for {word}, {total} to go. I am going to "
-            countDownMsg(minute, msg)
+            countResult = database.execute("SELECT count(*) as total FROM anagrams WHERE dict IS NULL")
+            row = countResult.fetchone()
+            total = row[0]
 
-            # time.sleep(minute)
+            result = database.execute("SELECT * FROM anagrams WHERE dict IS NULL")
+            totalSeconds = 0
 
-        print(f"ALL DONE! And it took {getFormatDuration(totalSeconds)}", end="\r")
-        database.disconnect()
+            for row in result:
+                word, charseq, dict = row
+                goFetch(word)
+                total -= 1
+                minute = random.randrange(1, 3) * 60 # 1 to 3 minutes sleep
+                totalSeconds += minute
+                msg = f"Done for {word}, {total} to go. I am going to "
+                countDownMsg(minute, msg)
+
+                # time.sleep(minute)
+
+            print(f"ALL DONE! And it took {getFormatDuration(totalSeconds)}", end="\r")
+            database.disconnect()
+        elif (argv[1] == "check"):
+            countResult = database.execute("SELECT count(*) as total FROM anagrams WHERE dict IS NOT NULL")
+            row = countResult.fetchone()
+            total = row[0]
+            print(f"Total completed row: {total}")
+
     else:
         print("nothing")
 
