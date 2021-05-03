@@ -18,9 +18,8 @@ kotlin/exp/*
 
 php/test.php
 
-<<<<<<< HEAD
 mean/argon-design/*
-=======
+
 share/anagrams.db
 share/dictionary.html
->>>>>>> 774ca3c13fcbf29664a5cd18279196e4457df92f
+share/anagramdicts.db

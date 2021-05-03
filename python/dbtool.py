@@ -12,10 +12,6 @@ from mylib.main import WORDS_DIR, jsonData, getWords, getCharSeq
 from mylib.deco import timer_decorator
 from mylib.db import DB
 
-database = DB('../share/anagrams.db')
-
-
-
 # try the decorator again
 @timer_decorator
 def initTable():
@@ -73,6 +69,9 @@ if __name__ == '__main__':
     """
     Check the command
     """
+    # add a new one here
+
+    database = DB('../share/anagrams.db')
     database.connect()
 
     if (cmd == "init"):
