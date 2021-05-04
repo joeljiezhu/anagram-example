@@ -46,13 +46,13 @@ def fillTable():
     print(f"total {wordsLen} in anagrams table")
     placeholder = ["?" for i in range(wordsLen)]
     # (fields) word, wordtype, definition
-    findSql = f"SELECT word, definition FROM dicts WHERE lcword IN ({','.join(placeholder)})"
+    findSql = f"SELECT lcword, definition FROM dicts WHERE lcword IN ({','.join(placeholder)})"
     # print(findSql)
     findResult = dictDb.execute(findSql, tuple(allWords))
     # there are lots of duplicate in the result ... WTF?
     wordsDef = {}
     ctn = 0
-    for row in sql.cur:
+    for row in findResult:
         ctn += 1
         (word, definition) = row
         wordsDef[word] = wordsDef.get(word) or []
@@ -82,14 +82,19 @@ def updateTable(wordsDef):
     for key in wordsDef.keys():
         data.append((json.dumps(wordsDef[key]), key))
 
-    sqlite.executeMany(updateSql, data)
+    # do this one by one!
+    for row in data:
+        sqlite.execute(updateSql, row)
+        print(f"update {row[1]} with entries of {len(row[0])}", end="\r")
+        time.sleep(0.3)
+
     # finally just check the total
     checkTableValue()
 
     return True # just a stop word
 
-def checkTableValue(isNotNull = True):
-    checkSql = f"SELECT count(*) as total FROM anagrams WHERE dict IS {'NOT 'if isNotNull else ''}NULL"
+def checkTableValue():
+    checkSql = f"SELECT count(*) as total FROM anagrams WHERE dict IS NOT NULL"
     for row in sqlite.execute(checkSql):
         print(f"Total word has no def is {row[0]}")
     # for row in output:
