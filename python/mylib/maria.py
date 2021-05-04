@@ -33,7 +33,7 @@ class Maria(object):
         self.connect()
         try:
             if (param != False):
-                result = self.cur.exeucte(sql, params)
+                result = self.cur.execute(sql, param)
             else:
                 result = self.cur.execute(sql)
             # default auto-commit
